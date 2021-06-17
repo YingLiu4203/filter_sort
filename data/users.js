@@ -12,3 +12,47 @@ const USERS = [
 ];
 
 export default USERS;
+
+function filterUsers(text) {
+  return USERS.filter((user) => {
+    if (text) {
+      return user.name.includes(text);
+    } else {
+      return true;
+    }
+  });
+}
+
+export function filterSortByName(text, asc) {
+  const newData = filterUsers(text);
+
+  const sortFunction = asc
+    ? (u1, u2) => u1.name.localeCompare(u2.name)
+    : (u1, u2) => u2.name.localeCompare(u1.name);
+
+  return newData.sort(sortFunction);
+}
+
+export function filterSortByGpa(text, asc) {
+  const newData = filterUsers(text);
+
+  const sortFunction = asc
+    ? (u1, u2) => u1.gpa - u2.gpa
+    : (u1, u2) => u2.gpa - u1.gpa;
+
+  return newData.sort(sortFunction);
+}
+
+const DELAY = 5000;
+
+export function fetchData() {
+  const promise = new Promise((resolve, reject) => {
+    console.log("start fetching data...");
+    setTimeout(() => {
+      console.log("Resolve data.");
+      resolve(USERS);
+    }, DELAY);
+  });
+
+  return promise;
+}

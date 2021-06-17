@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text } from "react-native";
 
-import USERS from "../data/users";
+import { fetchData, filterSortByGpa, filterSortByName } from "../data/users";
 import ListHeader from "./ListHeader";
 
 function keyExtractor(_, index) {
@@ -12,30 +12,21 @@ function renderItem({ item }) {
   return <Text style={styles.item}>{`${item.name}: ${item.gpa}`}</Text>;
 }
 
-function filterSort(data, text, asc) {
-  const newData = data.filter((user) => {
-    if (text) {
-      return user.name.includes(text);
-    } else {
-      return true;
-    }
-  });
-
-  const sortFunction = asc
-    ? (u1, u2) => u1.name.localeCompare(u2.name)
-    : (u1, u2) => u2.name.localeCompare(u1.name);
-
-  return newData.sort(sortFunction);
-}
-
-function UserList() {
+export default function UserList() {
   const [filter, setFilter] = useState(null);
-  const [data, setData] = useState(USERS);
+  const [data, setData] = useState(null);
   const [asc, setAsc] = useState(true);
+
+  // it is tricky to decide when to fetch data when things are complex
+  // you should use useEffect to handle this
+  if (!data) {
+    const fetchPromise = fetchData();
+    fetchPromise.then(setData);
+  }
 
   function onFilter(text) {
     setFilter(text);
-    const newData = filterSort(USERS, text, asc);
+    const newData = filterSortByName(text, asc);
     setData(newData);
   }
 
@@ -43,7 +34,7 @@ function UserList() {
     const reverse = !asc;
     setAsc(reverse);
 
-    const newData = filterSort(USERS, filter, reverse);
+    const newData = filterSortByName(filter, reverse);
     setData(newData);
   }
 
@@ -56,8 +47,6 @@ function UserList() {
     />
   );
 }
-
-export default UserList;
 
 const styles = StyleSheet.create({
   item: {

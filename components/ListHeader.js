@@ -17,7 +17,7 @@ function ListFilter({ onFilter }) {
   );
 }
 
-function ListHeader({ onFilter, onSort, asc }) {
+export default function ListHeader({ onFilter, onSort, asc }) {
   console.log(`List Header asc: ${asc}`);
   return (
     <View style={styles.header}>
@@ -26,8 +26,6 @@ function ListHeader({ onFilter, onSort, asc }) {
     </View>
   );
 }
-
-export default ListHeader;
 
 const styles = StyleSheet.create({
   header: {
